@@ -1,25 +1,31 @@
-const express=require('express')
-const connection = require('./connection')
-const cors=require('cors')
-const ProductModel = require('./Models/ProductModel')
-const ProductRouter = require('./Routes/ProductsRoute,js')
+const express = require('express');
+const cors  = require('cors') ;
+const { connection } = require('./config/db');
+const { UserRouter } = require("./routes/user.routes")
+const { auth } = require("./middleware/authentication")
+const { AppointRouter }=require("./routes/appointment.routes")
+require("dotenv").config();
+const app = express();
+app.use(express.json());
+app.use(cors());
 
-
-const app=express()
-app.use(express.json())
-app.use(cors())
-
-app.use(ProductRouter)
-
-app.listen(8080,async()=>{
-    try {
-        await connection
-        console.log('db connected to database successfully!')
-    } catch (error) {
-        console.log('db not connected to db')
-    }
-    console.log('server is running on port: 8080')
+app.get('/' , (req,res) => {
+    res.send("Welcome to Masai Hospital");
 })
+app.use(UserRouter);
+app.use(auth)
+app.use(AppointRouter);
 
-
-
+const PORT =  8080;
+app.listen(PORT, async () => {
+    try {
+        await connection;
+        console.log('Connection established');
+        
+    } catch (error) {
+      console.log('error');
+        
+    }
+    console.log(`Server is listening on ${PORT}`);
+    
+})
