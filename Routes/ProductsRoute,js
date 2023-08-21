@@ -1,0 +1,53 @@
+const express=require('express')
+const ProductModel = require('../Models/ProductModel')
+
+const ProductRouter=express.Router()
+
+
+ProductRouter.post("/data",async(req,res)=>{
+    try {
+        const newData= new ProductModel(req.body)
+         newData.save()
+         res.status(201).send(newData)
+
+    } catch (error) {
+        res.status(400).send(error)
+    }
+})
+
+
+ProductRouter.get("/data",async(req,res)=>{
+    try {
+        const allData= await ProductModel.find()
+         
+         res.status(200).send(allData)
+
+    } catch (error) {
+        res.status(400).send(error)
+    }
+})
+ProductRouter.get("/data/:id",async(req,res)=>{
+    try {
+        const _id=req.params.id
+        const singleData= await ProductModel.findById(_id)
+         
+         res.status(200).send(singleData)
+
+    } catch (error) {
+        res.status(400).send(error)
+    }
+})
+ProductRouter.patch("/data/:id",async(req,res)=>{
+    try {
+        const _id=req.params.id
+        const singleData= await ProductModel.findByIdAndUpdate(_id,req.body,{new:true})
+         
+         res.status(200).send(singleData)
+
+    } catch (error) {
+        res.status(400).send(error)
+    }
+})
+
+module.exports=ProductRouter
+
